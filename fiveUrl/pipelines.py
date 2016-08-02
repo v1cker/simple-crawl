@@ -12,6 +12,10 @@ from scrapy.conf import settings
 from scrapy.exceptions import DropItem
 from scrapy import log
 import sys
+from urlparse import urlparse
+from scrapy.exceptions import DropItem
+from fiveUrl.items import FiveurlItem
+from fiveUrl.items import UrlInjection
 reload(sys)
 sys.setdefaultencoding('utf-8')
 ########################################################################
@@ -40,6 +44,32 @@ class MongoDBPipeline:
 #            self.collection.insert({'hasScaned':0})
         return item
 
-class FiveurlPipeline(object):
+
+class FiveurlPipeline():
+    def __init__(self):
+        self.inject_hosts = set()
+        self.url_host = set()
     def process_item(self, item, spider):
-        return item
+        if isinstance(item,UrlInjection): #处理sql链接
+            things = urlparse(item['url'])
+            if things[1] + things[2] not in self.inject_hosts:
+                self.inject_hosts.add(things[1] + things[2])
+                with open('injection','a+') as e:
+                    e.writelines(item['url']+'\n')
+                    e.close()
+                return item
+            else:
+                raise DropItem('过滤掉一个item')
+        if isinstance(item,FiveurlItem):
+            netloc = urlparse(item['netloc'])
+            if netloc not in self.url_host:
+                self.url_host.add('netloc')
+                with open('FiveUrl', 'a+') as e:
+                    if item['from_netloc']==None:
+                        item['from_netloc']='None'
+                    e.writelines(item['netloc']+' '+urlparse(item['from_netloc'])[1]+'\n')
+                    e.close()
+                return item
+        else:
+            print '-------你妈炸了-------'
+            print item

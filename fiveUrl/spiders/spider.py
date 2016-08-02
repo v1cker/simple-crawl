@@ -8,6 +8,7 @@
 #import geoip2.database
 import scrapy
 from fiveUrl.items import FiveurlItem
+from fiveUrl.items import UrlInjection
 import socket
 from urlparse import urlparse
 url_set = set()
@@ -40,9 +41,6 @@ class Util:
     #----------------------------------------------------------------------
     @staticmethod
     def add_toInjection(url,netloc=None):
-        """每个主机只取一个链接,如果显式地传入了netloc参数,则xxxx"""
-        if netloc:
-            return netloc not in sqlInjection_set
         things = urlparse(url)
         if things[1]+things[2] not in sqlInjection_set:
             sqlInjection_set.add(things[1]+things[2])
@@ -57,21 +55,19 @@ class test(scrapy.spiders.Spider):
     #----------------------------------------------------------------------
     def parse(self,response):
         """parse"""
-        #print(soup.prettify())
+        if not hasattr(response,'xpath'):
+            return
         for url in response.xpath('//*[@href]/@href').extract():
-                #print(url)
-                #if Util.canCrawl(url):
-#                    url_set.add(urlparse(url)[1])
-#                    print('返回一个等待抓取的链接%s'%url)
-                 # 直接yeild 过滤不应该让这个来做 同理 对注入点的处理应该也是交给pipeline做,等待完善
-                if '=' in url and 'css' not in url:
- #                   print url
-                    if 'http' not in url:
-                        url = 'http://'+urlparse(response.url)[1]+'/'+url
-                    yield scrapy.Request(url, priority=-20)
-                    if Util.add_toInjection(url):
-                        #print('等待抓取的注入点%s'%url)
-                        item = FiveurlItem()
-                        item['url'] = url
-                        item['hasScaned'] = 0
-                        yield item
+            url = response.urljoin(url)  # 转化成绝对路径
+            if 'http' in url: #主要是去掉一些奇怪的协议的干扰
+                yield scrapy.Request(url)
+            five_urlItem = FiveurlItem()
+            netloc = urlparse(url)[1]
+            from_netloc = response.request.headers.get('Referer')
+            five_urlItem['netloc']=netloc
+            five_urlItem['from_netloc']=from_netloc
+            yield five_urlItem
+            if '=' in url and '.css' not in url:
+                item = UrlInjection()
+                item['url'] = url
+                yield item

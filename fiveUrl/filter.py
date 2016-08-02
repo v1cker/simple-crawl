@@ -5,16 +5,22 @@ from urlparse import urlparse
 
 
 class CustomFilter(RFPDupeFilter):
+    def __init__(self,path=None,debug=None):
+        RFPDupeFilter.__init__(self,path,debug)
+        self.fingerprints = {}
 
     def __getid(self,url):
         mm = urlparse(url)[1]
-        print '------>',mm
         return mm
 
     def request_seen(self, request):
         fp = self.__getid(request.url)
-        print '9999',fp
-        print 'self.fingerprints',self.fingerprints
-        if fp in self.fingerprints:
-            return True
-        self.fingerprints.add(fp)
+        if not self.fingerprints.has_key(fp):
+            self.fingerprints[fp]=0
+            return False
+        else:
+            if self.fingerprints[fp]<10:
+                self.fingerprints[fp]+=1
+                return False
+            else:
+                return True

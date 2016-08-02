@@ -63,6 +63,7 @@ COOKIES_ENABLED=False
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 #        'fiveUrl.pipelines.MongoDBPipeline': 300,
+        'fiveUrl.pipelines.FiveurlPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
