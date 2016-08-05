@@ -62,13 +62,15 @@ class FiveurlPipeline():
                 raise DropItem('过滤掉一个item')
 
         if isinstance(item,FiveurlItem):
-            netloc = urlparse(item['netloc'])[1]
+            netloc = urlparse(item['url'])[1]
             if netloc not in self.url_host:
                 self.url_host.add(netloc)
                 with open('FiveUrl', 'a+') as e:
-                    if item['from_netloc']==None:
-                        item['from_netloc']='None'
-                    e.writelines(item['netloc']+' '+urlparse(item['from_netloc'])[1]+'\n')
+                    if item['source_url']==None:
+                        item['source_url']='None'
+                    source_netloc = urlparse(item['source_url'])[1]
+                    if netloc!=source_netloc:
+                        e.writelines(netloc+' '+source_netloc+'\n')
                     e.close()
                 return item
         else:
