@@ -20,7 +20,7 @@ class test(scrapy.spiders.Spider):
     name = 'main'
 #    start_urls = ['http://yinyue.kuwo.cn/']
     start_urls = ['http://%s'%i.strip() for i in open('target')]
-#    allowed_domains = ['gov.cn']
+    allowed_domains = ['edu.cn']
     #----------------------------------------------------------------------
     def parse(self,response):
         """parse"""
@@ -33,7 +33,7 @@ class test(scrapy.spiders.Spider):
             five_urlItem = FiveurlItem()
             from_url = response.request.headers.get('Referer')
             five_urlItem['url']=url
-            five_urlItem['source_url']=url
+            five_urlItem['source_url']=from_url
             yield five_urlItem
             if '=' in url and '.css' not in url:
                 item = UrlInjection()

@@ -50,18 +50,16 @@ class FiveurlPipeline():
         self.inject_hosts = set()
         self.url_host = set()
     def process_item(self, item, spider):
-        if isinstance(item,UrlInjection): #处理sql链接
+        if type(item)==UrlInjection: #处理sql链接
             things = urlparse(item['url'])
-            if things[1] + things[2] not in self.inject_hosts:
-                self.inject_hosts.add(things[1] + things[2])
+            key_ = things[1]
+            if key_ not in self.inject_hosts:
+                self.inject_hosts.add(key_)
                 with open('injection','a+') as e:
                     e.writelines(item['url']+'\n')
-                    e.close()
                 return item
-            else:
-                raise DropItem('过滤掉一个item')
 
-        if isinstance(item,FiveurlItem):
+        elif type(item)==FiveurlItem:
             netloc = urlparse(item['url'])[1]
             if netloc not in self.url_host:
                 self.url_host.add(netloc)
@@ -71,8 +69,7 @@ class FiveurlPipeline():
                     source_netloc = urlparse(item['source_url'])[1]
                     if netloc!=source_netloc:
                         e.writelines(netloc+' '+source_netloc+'\n')
-                    e.close()
                 return item
         else:
             print '-------你妈炸了-------'
-            print item
+            print item,type(item)
