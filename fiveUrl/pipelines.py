@@ -60,10 +60,11 @@ class FiveurlPipeline():
                 return item
             else:
                 raise DropItem('过滤掉一个item')
+
         if isinstance(item,FiveurlItem):
-            netloc = urlparse(item['netloc'])
+            netloc = urlparse(item['netloc'])[1]
             if netloc not in self.url_host:
-                self.url_host.add('netloc')
+                self.url_host.add(netloc)
                 with open('FiveUrl', 'a+') as e:
                     if item['from_netloc']==None:
                         item['from_netloc']='None'

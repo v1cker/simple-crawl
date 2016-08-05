@@ -11,8 +11,8 @@ import scrapy
 class FiveurlItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    netloc = scrapy.Field()
-    from_netloc = scrapy.Field()
+    url = scrapy.Field()
+    source_url = scrapy.Field()
     pass
 
 class UrlInjection(scrapy.Item):
