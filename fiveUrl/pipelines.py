@@ -49,17 +49,28 @@ class FiveurlPipeline():
     def __init__(self):
         self.inject_hosts = set()
         self.url_host = set()
+    #----------------------------------------------------------------------
+    # 转化的形式：https://www.baidu.com/s?ie&f=&inputT=&oq=&prefixsug=&rqlang=&rsp=&rsv_bp=&rsv_enter=&rsv_pq=&rsv_sug1=&rsv_sug2=&rsv_sug3=&rsv_sug4=&rsv_sug7=&rsv_t=&tn=&wd
+    @staticmethod
+    def format_url(url):
+        """将链接中带的参数转化成xxx"""
+        things = url.split('=')
+        for i in range(len(things)):
+            if '&' in things[i]:
+                things[i] = things[i][things[i].find('&'):]
+        return_thing = things[0]+'='+'='.join(sorted(things[1:]))
+        return return_thing[0:return_thing.rfind('=')]
+    
     def process_item(self, item, spider):
-        if type(item)==UrlInjection: #处理sql链接
-            things = urlparse(item['url'])
-            key_ = things[1]
+        if type(item)==UrlInjection: #处理sql注入的链接
+            key_ = FiveurlPipeline.format_url(item['url'])
             if key_ not in self.inject_hosts:
                 self.inject_hosts.add(key_)
                 with open('injection','a+') as e:
                     e.writelines(item['url']+'\n')
                 return item
 
-        elif type(item)==FiveurlItem:
+        elif type(item)==FiveurlItem: 
             netloc = urlparse(item['url'])[1]
             if netloc not in self.url_host:
                 self.url_host.add(netloc)
@@ -73,3 +84,6 @@ class FiveurlPipeline():
         else:
             print '-------你妈炸了-------'
             print item,type(item)
+
+if __name__=='__main__':
+    print FiveurlPipeline().format_url('https://www.baidu.com/s?ie=utf-8&f=3&rsv_bp=1&tn=monline_dg&wd=wordpress%20keywords%20description&oq=windows%20KeyWords&rsv_pq=e1a0507200035f31&rsv_t=d8d2eyqKRfSj7pCTzFOZusxJP5YykMb48%2BZjnDxlwRYRY6xgbPFYW1uG6bPtWg%2FKkA&rqlang=cn&rsv_enter=1&inputT=10413&rsv_sug3=54&rsv_sug1=7&rsv_sug7=100&rsv_sug2=0&prefixsug=wordpress%20KeyWords&rsp=0&rsv_sug4=11064')
