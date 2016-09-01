@@ -84,10 +84,10 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR='httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES=[]
 #HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
-CONCURRENT_REQUESTS = 70
+CONCURRENT_REQUESTS = 700
 COOKIES_ENABLED = False
-DOWNLOAD_TIMEOUT = 20
-DOWNLOAD_MAXSIZE = 10737418
+DOWNLOAD_TIMEOUT = 25
+DOWNLOAD_MAXSIZE = 10737410
 RETRY_ENABLED = False
 USER_AGENT = 'Mozilla/5.0 ()X11; Linux x86_64) AppleWebKit/537.36 ()KHTML, like Gecko) Ubuntu Chromium/50.0.2661.102 Chrome/50.0.2661.102 Safari/537.36'
 MONGODB_SERVER = "nofiht.ml"
@@ -96,3 +96,8 @@ MONGODB_DB = "tudou_cn"
 MONGODB_COLLECTION = "url"
 DUPEFILTER_CLASS = 'fiveUrl.filter.CustomFilter'
 #REDIRECT_ENABLED = False
+# guang du youxian
+DEPTH_PRIORITY = 1
+SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
+SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'
+

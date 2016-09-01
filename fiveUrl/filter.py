@@ -19,7 +19,7 @@ class CustomFilter(RFPDupeFilter):
             self.fingerprints[fp]=0
             return False
         else:
-            if self.fingerprints[fp]<10000:
+            if self.fingerprints[fp]<200:
                 self.fingerprints[fp]+=1
                 return False
             else:
