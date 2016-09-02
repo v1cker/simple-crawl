@@ -32,14 +32,11 @@ class MongoDBPipeline:
 
     def process_item(self, item, spider):
         valid = True
-        for data in item:
-            if not data:
-                valid = False
-                raise DropItem("Missing {0}!".format(data))
         if valid:
-            item['hasScaned']=0
-            self.collection.insert(dict(item))
-            log.msg("Question added to MongoDB database!",
+#            self.collection.insert(dict(item))
+#            i.update({'host':'hnjd.edu.c3n'},{'$push':{'url':{"$each":[6]}}})
+            self.collection.update({'host':item['host']},{"$push":{"url":item['url']}})
+            log.msg("成功加入的Mongo",
                     level=log.DEBUG, spider=spider)
 #            self.collection.insert({'hasScaned':0})
         return item
