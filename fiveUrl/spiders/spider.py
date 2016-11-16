@@ -37,7 +37,13 @@ class test(scrapy.spiders.Spider):
                 item = UrlInjection()
                 item['url'] = url
                 yield item
-        with_post_data = get_sth(response.body)
+        try:
+            with_post_data = get_sth(response.body)
+        except Exception as e:
+            with open('error_url','a+') as e:
+                e.writelines(response.url)
+                e.writelines('\n')
+                return
         data = [response.url,with_post_data]
         with open('post_data','a+') as e:
             e.writelines(response.url)
