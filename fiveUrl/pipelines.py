@@ -58,7 +58,6 @@ class FiveurlPipeline():
                 with open('injection','a+') as e:
                     e.writelines(item['url']+'\n')
                 return item
-
         elif type(item)==FiveurlItem:
             netloc = urlparse(item['url'])[1]
             if netloc not in self.url_host:
@@ -71,5 +70,5 @@ class FiveurlPipeline():
                         e.writelines(netloc+' '+source_netloc+'\n')
                 return item
         else:
-            print '-------你妈炸了-------'
+            print 'Something got error'
             print item,type(item)
