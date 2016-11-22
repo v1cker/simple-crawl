@@ -62,8 +62,8 @@ COOKIES_ENABLED=False
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-#        'fiveUrl.pipelines.MongoDBPipeline': 300,
-        'fiveUrl.pipelines.FiveurlPipeline': 300,
+        'fiveUrl.pipelines.MongoDBPipeline': 300,
+#        'fiveUrl.pipelines.FiveurlPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -89,15 +89,15 @@ COOKIES_ENABLED = False
 DOWNLOAD_TIMEOUT = 25
 DOWNLOAD_MAXSIZE = 10737410
 RETRY_ENABLED = False
-USER_AGENT = 'Mozilla/5.0 ()X11; Linux x86_64) AppleWebKit/537.36 ()KHTML, like Gecko) Ubuntu Chromium/50.0.2661.102 Chrome/50.0.2661.102 Safari/537.36'
-MONGODB_SERVER = "nofiht.ml"
+USER_AGENT = 'Baiduspider+(+http://www.baidu.com/search/spider.html'
+MONGODB_SERVER = '119.29.70.15'
 MONGODB_PORT = 27017
-MONGODB_DB = "tudou_cn"
-MONGODB_COLLECTION = "url"
+MONGODB_DB = "edu_cns"
+MONGODB_COLLECTION = "things"
 DUPEFILTER_CLASS = 'fiveUrl.filter.CustomFilter'
 #REDIRECT_ENABLED = False
 # guang du youxian
 DEPTH_PRIORITY = 1
 SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
 SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'
-
+LOG_FILE = 'scrapyLog.log'

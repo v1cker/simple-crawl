@@ -20,10 +20,15 @@ class test(scrapy.spiders.Spider):
     """test Demo"""
     name = 'main'
 #    start_urls = ['http://yinyue.kuwo.cn/']
-    def __init__(target):
-        
-        start_urls = ['http://%s'%i.strip() for i in open(target)]
-        allowed_domains = [target]
+    def __init__(self):
+        db = pymongo.MongoClient('119.29.70.15')['edu_cns']['things']
+        things = db.find_one({'scrapyed':{'$exists':False}})
+        db.update({'_id':things['_id']},{'$set':{'scrapyed':'1'}})
+        self.start_urls =[ 'http://%s'%i for i in things['subDomains']]
+        self.allowed_domains = [things['host']]
+        print things
+        self.host = things['host']
+        self._id = things['_id']
     #----------------------------------------------------------------------
     def parse(self,response):
         """parse"""
@@ -37,7 +42,8 @@ class test(scrapy.spiders.Spider):
             #five_urlItem['url']=url
             #five_urlItem['source_url']=from_url
             #yield five_urlItem
-            if '=' in url and '.css' not in url:
+            if '=' in url and '.css' not in url and 'javascript:' not in url and "tree.TreeTempUrl" not in url and '?' in url:
                 item = UrlInjection()
                 item['url'] = url
+                item['_id'] = self._id
                 yield item

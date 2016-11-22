@@ -17,3 +17,4 @@ class FiveurlItem(scrapy.Item):
 
 class UrlInjection(scrapy.Item):
     url = scrapy.Field()
+    _id = scrapy.Field()

@@ -29,16 +29,18 @@ class MongoDBPipeline:
         )
         db = connection[settings['MONGODB_DB']]
         self.collection = db[settings['MONGODB_COLLECTION']]
-
+        self.se = set()
     def process_item(self, item, spider):
         valid = True
-        if valid:
+        url = item['url']
+        key = url[:url.find('?')] 
+        if key not in self.se:
 #            self.collection.insert(dict(item))
 #            i.update({'host':'hnjd.edu.c3n'},{'$push':{'url':{"$each":[6]}}})
-            self.collection.update({'host':item['host']},{"$push":{"url":item['url']}})
-            log.msg("成功加入的Mongo",
-                    level=log.DEBUG, spider=spider)
-#            self.collection.insert({'hasScaned':0})
+            self.collection.update({'_id':item['_id']},{"$push":{"url":item['url']}})
+            self.se.add(key)
+        else:
+            pass
         return item
 
 
